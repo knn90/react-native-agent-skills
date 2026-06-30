@@ -1,0 +1,96 @@
+# Provenance + curation for the react-expert skill.
+# Maintained by rn-skill-consolidate — do not hand-edit pinned_commit / last_synced.
+
+skill: react-expert
+domain: React / React Native components, hooks, render & list performance, accessibility
+last_consolidated: 2026-06-30
+
+discovery:
+  enabled: true
+  queries:                     # seeds for the discovery step (current year appended at run time)
+    - "React agent skill"
+    - "React Native best practices"
+    - "React hooks rules"
+    - "React Compiler memoization"
+    - "FlatList FlashList performance"
+    - "React Native accessibility"
+  authority_anchors:           # always weighted top for currency
+    - "react.dev"
+    - "reactnative.dev"
+
+sources:
+  # ── PRIMARY / SOURCE OF TRUTH: official docs win on any conflict ──
+  - name: React — official documentation (react.dev)
+    url: https://react.dev
+    also:
+      - https://react.dev/reference/rules/rules-of-hooks
+      - https://react.dev/reference/react/useMemo
+      - https://react.dev/reference/react/useCallback
+      - https://react.dev/reference/eslint-plugin-react-hooks/lints/exhaustive-deps
+      - https://react.dev/learn/removing-effect-dependencies
+      - https://react.dev/learn/react-compiler/introduction
+      - https://react.dev/blog/2025/10/07/react-compiler-1
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth
+    consulted_version: "React 19 / React Compiler 1.0 (stable 2025-10-07, default in Expo SDK 54+)"
+    last_synced: 2026-06-30
+    license: "Meta / React — reference / learn-from only; never vendor verbatim"
+    note: >
+      Authoritative for hooks rules, the memoization stance (memo = performance, never
+      correctness), the exhaustive-deps rule (never suppress — restructure), and the React
+      Compiler (v1.0 stable; auto-memoizes at build time for React AND React Native).
+
+  - name: React Native — official documentation (reactnative.dev)
+    url: https://reactnative.dev
+    also:
+      - https://reactnative.dev/docs/optimizing-flatlist-configuration
+      - https://reactnative.dev/docs/performance
+      - https://reactnative.dev/docs/virtualizedlist
+      - https://reactnative.dev/docs/accessibility
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth
+    consulted_version: "React Native 0.81 (New Architecture default 0.76+)"
+    last_synced: 2026-06-30
+    license: "Meta / React Native — reference / learn-from only; never vendor verbatim"
+    note: >
+      Authoritative for RN list performance (FlatList over VirtualizedList; windowSize default 21,
+      maxToRenderPerBatch default 10; React.memo rows; hoist + useCallback renderItem;
+      getItemLayout for fixed-size rows) and accessibility (accessibilityLabel/Role/State, hit
+      targets, screen-reader order). reactnative.dev itself names FlashList and Legend List as
+      perf alternatives.
+
+  - name: Shopify FlashList — maintainer docs
+    url: https://shopify.github.io/flash-list/docs
+    also:
+      - https://github.com/Shopify/flash-list
+    path: .
+    status: active
+    primary: true              # maintainer docs for the recommended FlatList alternative
+    consulted_version: "FlashList v2 (New-Architecture-only; v1 for old arch)"
+    last_synced: 2026-06-30
+    license: MIT
+    note: >
+      v2 is New-Architecture-ONLY, removes estimatedItemSize, and recycles via a configurable pool.
+      Gate FlashList v2 recommendations on the profile's new_architecture:true.
+
+  # ── Community references (structure/checklist only; reconcile against the primary docs) ──
+  - name: VoltAgent/awesome-claude-code-subagents
+    url: https://github.com/VoltAgent/awesome-claude-code-subagents
+    path: categories/02-language-specialists/react-specialist.md   # also expo-react-native-expert.md, categories/04-quality-security/accessibility-tester.md
+    status: active
+    pinned_commit: c193ad45419c
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+    note: Structure/checklist reference only. Predates React Compiler default + lists Recoil (dead); reconcile against react.dev/reactnative.dev.
+  - name: addyosmani/agent-skills
+    url: https://github.com/addyosmani/agent-skills
+    path: skills/frontend-ui-engineering/
+    status: active
+    pinned_commit: aba7c4e9695c
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+    note: Credible author (Addy Osmani); frontend/React patterns. Not RN-specific.

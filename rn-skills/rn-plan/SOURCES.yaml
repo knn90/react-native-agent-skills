@@ -1,0 +1,40 @@
+# Provenance + freshness tracking for the rn-plan skill.
+# Maintained by rn-skill-consolidate — do not hand-edit pinned_commit / last_synced.
+# NOTE: rn-plan is a WORKFLOW skill (bespoke orchestration, NOT synthesized domain knowledge).
+# It is AUDIT-ONLY: the consolidator runs source staleness + discovery (Step 1) and surfaces
+# new/dead planning sources as a PR, but NEVER auto-merges content into SKILL.md. A human adapts
+# the ideas by hand (selectively), the way the current methodology was adopted.
+
+skill: rn-plan
+domain: implementation planning & task breakdown (methodology for React Native feature / refactor / ticket plans)
+mode: audit-only          # discovery + staleness only; synthesis (Steps 3–4) is SKIPPED
+last_consolidated: 2026-06-30   # never auto-synthesized — this skill is hand-curated
+
+discovery:
+  enabled: true
+  queries:
+    - "implementation planning agent skill"
+    - "task breakdown agent skill"
+    - "vertical slicing feature planning"
+    - "dependency graph build order planning"
+  authority_anchors:
+    - "React — react.dev (app structure, component composition)"
+    - "React Native — reactnative.dev"
+    - "Expo — docs.expo.dev (project layout, EAS, prebuild/CNG)"
+    - "the consuming project's rules_file (per .claude/rn-profile.md)"
+
+sources:
+  - name: addyosmani/agent-skills — planning-and-task-breakdown
+    url: https://github.com/addyosmani/agent-skills
+    path: skills/planning-and-task-breakdown/
+    status: active
+    pinned_commit: TBD        # set on first audit run
+    last_synced: 2026-06-30
+    license: TBD              # verify; cite-only until confirmed
+    cite_only: true           # methodology reference — ideas adapted by hand, never vendored
+    note: >
+      Source of the dependency-graph build order, vertical slicing, per-task sizing (XL→split),
+      checkpoint cadence, and per-task acceptance criteria adopted (selectively) into rn-plan.
+      The per-task Files-touched / Estimated-scope fields were deliberately NOT adopted — they
+      duplicate plan.md's File Changes table and the per-step size. Future changes here are
+      adapted by a human, not auto-merged.

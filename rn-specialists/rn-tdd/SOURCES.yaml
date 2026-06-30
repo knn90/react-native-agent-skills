@@ -1,0 +1,65 @@
+# Provenance + curation for the rn-tdd skill.
+# Maintained by rn-skill-consolidate — do not hand-edit pinned_commit / last_synced.
+
+skill: rn-tdd
+domain: Test-Driven Development discipline for React Native (process; pairs with rn-testing-expert)
+last_consolidated: 2026-06-30
+
+# Scope note: framework SEMANTICS (Jest matchers, React Native Testing Library queries/render/
+# user-event, doubles, mock placement, fake timers) are OWNED by rn-testing-expert. rn-tdd
+# consolidates the *process* only and cross-links there. Keep the two from overlapping when
+# re-consolidating.
+
+discovery:
+  enabled: true
+  queries:
+    - "test-driven development agent skill"
+    - "TDD red green refactor best practices"
+    - "tracer bullet vertical slice TDD"
+    - "test behavior not implementation"
+    - "DAMP not DRY tests"
+  authority_anchors:
+    - "Kent Beck — Test-Driven Development by Example"
+    - "Google Testing Blog / Software Engineering at Google — test sizes, DAMP, state vs interaction"
+    - "Martin Fowler — test double taxonomy, refactoring"
+
+sources:
+  # ── Language-agnostic PRIMARY discipline sources ──
+  - name: mattpocock/skills — engineering/tdd
+    url: https://github.com/mattpocock/skills
+    path: skills/engineering/tdd/
+    also:
+      - https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/tests.md       # → references/tests.md
+      - https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/mocking.md     # → references/mocking.md
+      - https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/refactoring.md # → references/refactoring.md
+    status: active
+    pinned_commit: TBD          # pin on first rn-skill-consolidate run
+    last_synced: 2026-06-30
+    license: MIT
+    primary: true
+    note: >
+      Source for the vertical-slice / tracer-bullet framing (horizontal slicing as the cardinal
+      anti-pattern), "never refactor while RED", behavior-through-public-interface emphasis, and
+      the plan-the-behaviors / you-can't-test-everything planning step. Discipline is
+      language-agnostic — kept as primary. The three companion files (tests/mocking/refactoring)
+      were rewritten TypeScript-native into references/ — mocking.md keeps the *decision*
+      (boundaries + DI + SDK-style interfaces) and defers the double taxonomy + jest.mock
+      placement to rn-testing-expert §8 to avoid duplication.
+
+  # ── Community sources (primary: false tier) ──
+  - name: addyosmani/agent-skills
+    url: https://github.com/addyosmani/agent-skills
+    path: skills/test-driven-development/
+    status: active
+    pinned_commit: aba7c4e9695c
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+    note: TDD discipline reference, 383-line skill (Addy Osmani) — strong structural match.
+
+# ── Notes ──
+# Examples were rewritten TypeScript-native (Jest describe/it/expect, React Native Testing Library
+# render/screen/waitFor/user-event, rendered-output-not-internal-state).
+# Framework mechanics deliberately deferred to rn-testing-expert to avoid duplication.
+# On the first real rn-skill-consolidate run: fetch both repos at HEAD and fill/refresh the
+# pinned_commit fields.

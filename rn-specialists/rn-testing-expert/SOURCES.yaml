@@ -1,0 +1,114 @@
+# Provenance + curation for the rn-testing-expert skill.
+# Maintained by rn-skill-consolidate — do not hand-edit pinned_commit / last_synced.
+
+skill: rn-testing-expert
+domain: React Native testing (Jest + RNTL, native-module mocking, Detox/Maestro e2e)
+last_consolidated: 2026-06-30
+
+discovery:
+  enabled: true
+  queries:                     # seeds for the discovery step (current year appended at run time)
+    - "React Native Testing Library best practices"
+    - "Jest react-native preset configuration"
+    - "mock native modules jest react native"
+    - "Detox vs Maestro react native e2e"
+    - "React Native testing async act waitFor"
+  authority_anchors:           # always weighted top for currency
+    - "jestjs.io"
+    - "callstack RNTL (oss.callstack.com/react-native-testing-library)"
+    - "wix.github.io/Detox"
+    - "maestro.dev"
+
+sources:
+  # ── PRIMARY / SOURCE OF TRUTH: official docs win on any conflict ──
+  - name: Jest — React Native tutorial (official runner docs)
+    url: https://jestjs.io/docs/tutorial-react-native
+    also:
+      - https://jestjs.io/docs/timer-mocks
+      - https://jestjs.io/docs/mock-functions
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth
+    consulted_version: "Jest (react-native preset; default since RN 0.38)"
+    last_synced: 2026-06-30
+    license: "Jest / Meta — reference / learn-from only; never vendor verbatim"
+    note: >
+      Authoritative that Jest is RN's default runner — a Jest setup is included by default
+      since react-native 0.38 via the `react-native` preset (node env mimicking an RN app).
+      Also the source for jest mock functions and fake/timer mocks.
+
+  - name: React Native Testing Library — maintainer docs (Callstack)
+    url: https://oss.callstack.com/react-native-testing-library
+    also:
+      - https://oss.callstack.com/react-native-testing-library/docs/api/queries
+      - https://oss.callstack.com/react-native-testing-library/docs/advanced/understanding-act
+      - https://oss.callstack.com/react-native-testing-library/docs/api/events/user-event
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth
+    consulted_version: "RNTL v14 (act async by default; requires React 19+)"
+    last_synced: 2026-06-30
+    license: MIT
+    note: >
+      Authoritative for component testing: query the public interface by accessibility role /
+      label / text over testID; query variants (getBy/queryBy/findBy/AllBy). v14 — act() is ASYNC
+      by default and always returns a Promise; ALWAYS `await act(...)`. v14 requires React 19+.
+      render/rerender/fireEvent are already wrapped in act. Use `await waitFor(...)` / `findBy*` for
+      async UI (no arbitrary timers). Prefer user-event (async) over fireEvent for realistic
+      interaction. NOTE: the oss.callstack.com host returns 403 to generic fetchers — pull via a
+      browser/authenticated tool when re-syncing.
+
+  # ── Official e2e maintainer docs (present NEUTRALLY; choose per profile `e2e`) ──
+  - name: Detox — maintainer docs (Wix)
+    url: https://wix.github.io/Detox
+    also:
+      - https://wix.github.io/Detox/docs/introduction/getting-started
+    path: .
+    status: active
+    primary: true              # maintainer docs for the gray-box e2e option
+    consulted_version: "Detox (React Native gray-box e2e)"
+    last_synced: 2026-06-30
+    license: MIT
+    note: >
+      Gray-box e2e — access to app internals, synchronizes with the app (waits for idle) instead of
+      sleeps; tests authored in JavaScript/TypeScript; goal "maximum velocity and zero flakiness."
+      Pick when profile e2e:detox. Present neutrally vs Maestro — NOT a verdict.
+
+  - name: Maestro — maintainer docs
+    url: https://docs.maestro.dev
+    path: .
+    status: active
+    primary: true              # maintainer docs for the black-box e2e option
+    consulted_version: "Maestro (mobile UI automation via YAML flows)"
+    last_synced: 2026-06-30
+    license: "Maestro / mobile.dev — reference / learn-from only"
+    note: >
+      Black-box e2e — declarative YAML flows, "simplest and most effective framework for painless
+      mobile UI automation"; minimal/zero IDE setup, built-in waiting that tolerates UI timing.
+      Pick when profile e2e:maestro. Present neutrally vs Detox — NOT a verdict.
+
+  # ── Community references (structure/checklist only; reconcile against the primary docs) ──
+  - name: VoltAgent/awesome-claude-code-subagents
+    url: https://github.com/VoltAgent/awesome-claude-code-subagents
+    path: categories/04-quality-security/test-automator.md
+    status: active
+    pinned_commit: c193ad45419c
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+    note: Structure reference only; reconcile against jest/RNTL/Detox/Maestro docs.
+
+  - name: addyosmani/agent-skills
+    url: https://github.com/addyosmani/agent-skills
+    path: skills/test-driven-development/
+    status: active
+    pinned_commit: aba7c4e9695c
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+    note: TDD discipline reference (Addy Osmani).
+
+# ── Notes ──
+# Detox vs Maestro is presented NEUTRALLY from each tool's own maintainer docs; the choice is driven
+# by the profile's `e2e` field, not by a vendor comparison. Blacklisted as non-neutral / off-source:
+# reactnativerelay.com, maestro.dev/insights/detox-vs-maestro, legacy.reactjs.org — do NOT add.

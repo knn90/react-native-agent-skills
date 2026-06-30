@@ -1,0 +1,85 @@
+# Provenance + curation for the rn-code-review skill.
+# Maintained by rn-skill-consolidate — do not hand-edit pinned_commit / last_synced.
+# NOTE: rn-code-review is a CORE skill (lives in rn-skills/, not rn-specialists/) but is
+# consolidatable — it carries this SOURCES.yaml so the consolidator can refresh its methodology.
+
+skill: rn-code-review
+domain: React Native code review (methodology + TypeScript / React / React Native / architecture / testing review)
+last_consolidated: 2026-06-30
+
+discovery:
+  enabled: true
+  queries:
+    - "React Native code review agent skill"
+    - "React code review checklist"
+    - "React Native architecture review"
+    - "multi-agent code review swarm"
+  authority_anchors:
+    - "React — react.dev (hooks, effects, memoization, render correctness)"
+    - "React Native — reactnative.dev"
+    - "Expo — docs.expo.dev"
+    - "Maintainer docs (TanStack Query / React Navigation / Expo Router / Shopify FlashList / Callstack RNTL / Detox / Maestro)"
+    - "the consuming project's rules_file (per .claude/rn-profile.md)"
+
+sources:
+  # ── PRIMARY / SOURCE OF TRUTH ──
+  - name: React + React Native + Expo docs + the project's rules_file
+    url: https://react.dev/
+    also:
+      - https://reactnative.dev/docs/getting-started
+      - https://docs.expo.dev/
+    path: .
+    status: active
+    primary: true
+    consulted_version: "React 19.x / React Native 0.81.x"
+    last_synced: 2026-06-30
+    license: "React/Meta + Expo — reference; the project's rules_file is the per-project authority"
+    note: >
+      Review standards come from react.dev / reactnative.dev / docs.expo.dev + the consuming
+      project's rules_file. Memoization is performance-only, never correctness (react.dev: "no
+      significant harm"); exhaustive-deps is never suppressed but restructured. Domain depth is
+      DELEGATED to the installed specialist skills (react-expert, rn-state-expert,
+      rn-navigation-expert, rn-testing-expert, typescript-expert, rn-solid-expert) — they are the
+      source of truth for their domains and are triggered per change-type during review (Stage 2.0).
+      Don't duplicate them here.
+
+  # ── Maintainer docs consulted for domain-specific review heuristics ──
+  - name: TanStack Query docs            # server-state / cache correctness review
+    url: https://tanstack.com/query/latest/docs/framework/react/overview
+    path: .
+    status: active
+    last_synced: 2026-06-30
+    license: "MIT — reference"
+
+  - name: React Navigation + Expo Router docs   # navigation param typing, deep-link handling
+    url: https://reactnavigation.org/docs/getting-started
+    also:
+      - https://docs.expo.dev/router/introduction/
+    path: .
+    status: active
+    last_synced: 2026-06-30
+    license: "MIT — reference"
+
+  - name: React Native Testing Library docs    # RNTL idioms, queries, async testing for the testing lens
+    url: https://callstack.github.io/react-native-testing-library/
+    path: .
+    status: active
+    last_synced: 2026-06-30
+    license: "MIT — reference"
+
+  # ── Community method sources (review-swarm + reuse/simplify patterns) ──
+  - name: Multi-lens review-swarm pattern   # parallel 4-lens review + precision-filter synthesis
+    url: https://github.com/Dimillian/Skills
+    path: review-swarm/
+    status: active
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+
+  - name: review-and-simplify-changes pattern   # reuse / quality / efficiency / clarity lens
+    url: https://github.com/Dimillian/Skills
+    path: review-and-simplify-changes/
+    status: active
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false

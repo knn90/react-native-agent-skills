@@ -1,0 +1,14 @@
+{
+  "name": "react-native-agent-skills",
+  "owner": {
+    "name": "knn90",
+    "url": "https://github.com/knn90"
+  },
+  "plugins": [
+    {
+      "name": "rn-skills",
+      "source": "./",
+      "description": "React Native engineering workflow + specialist reviewers (scout · plan · execute · code-review · resolve, plus React/Hooks / State / Navigation / Testing / TypeScript / SOLID experts)."
+    }
+  ]
+}

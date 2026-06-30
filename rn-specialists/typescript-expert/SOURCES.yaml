@@ -1,0 +1,89 @@
+# Provenance + curation for the typescript-expert skill.
+# Maintained by rn-skill-consolidate — do not hand-edit pinned_commit / last_synced.
+
+skill: typescript-expert
+domain: TypeScript for React Native
+last_consolidated: 2026-06-30
+
+discovery:
+  enabled: true
+  queries:                     # seeds for the discovery step (current year appended at run time)
+    - "TypeScript agent skill"
+    - "TypeScript React Native strict mode"
+    - "TypeScript discriminated unions state"
+    - "type-safe React Navigation params"
+    - "Expo Router typed routes"
+    - "zod runtime validation TypeScript"
+  authority_anchors:           # always weighted top for currency
+    - "reactnative.dev/docs/typescript"
+    - "docs.expo.dev/guides/typescript"
+    - "typescriptlang.org"
+
+sources:
+  # ── PRIMARY / SOURCE OF TRUTH: official docs win on any conflict ──
+  - name: React Native — TypeScript guide (reactnative.dev)
+    url: https://reactnative.dev/docs/typescript
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth
+    consulted_version: "React Native 0.81; @react-native/typescript-config"
+    last_synced: 2026-06-30
+    license: "Meta / React Native — reference / learn-from only; never vendor verbatim"
+    note: >
+      Authoritative that TypeScript is the default for new RN projects, that the root tsconfig extends
+      @react-native/typescript-config, that props are typed via a Props type, and that `tsc` is the
+      recommended type-check command (type-checking only).
+
+  - name: Expo — TypeScript guide + typed routes (docs.expo.dev)
+    url: https://docs.expo.dev/guides/typescript/
+    also:
+      - https://docs.expo.dev/router/reference/typed-routes/
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth
+    consulted_version: "Expo SDK 54+; expo/tsconfig.base; expo-router typed routes"
+    last_synced: 2026-06-30
+    license: "Expo — reference / learn-from only; never vendor verbatim"
+    note: >
+      Authoritative that TS is the default Expo template, that tsconfig extends expo/tsconfig.base, that
+      Expo explicitly recommends "strict": true, that path aliases are supported via Metro, and (typed
+      routes page) that experiments.typedRoutes enables Href validation + the useLocalSearchParams<...>
+      generics (first generic = file-system route, second = query params).
+
+  - name: TypeScript Handbook (typescriptlang.org)
+    url: https://www.typescriptlang.org/docs/handbook/intro.html
+    also:
+      - https://www.typescriptlang.org/docs/handbook/2/narrowing.html        # discriminated unions, never-exhaustiveness, narrowing
+      - https://www.typescriptlang.org/docs/handbook/2/everyday-types.html    # any vs unknown, type vs interface
+      - https://www.typescriptlang.org/docs/handbook/2/generics.html
+      - https://www.typescriptlang.org/tsconfig/#strict
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth for the language itself
+    consulted_version: "TypeScript Handbook (current)"
+    last_synced: 2026-06-30
+    license: "Microsoft / TypeScript — reference / learn-from only; never vendor verbatim"
+    note: >
+      Authoritative for the language: discriminated unions (a common literal-typed discriminant property
+      narrows the union), exhaustiveness checking with the `never` type in a switch default, `unknown`
+      vs `any`, generics, and the `strict` compiler-option bundle.
+
+  # ── Community references (structure/checklist only; reconcile against the primary docs) ──
+  - name: VoltAgent/awesome-claude-code-subagents
+    url: https://github.com/VoltAgent/awesome-claude-code-subagents
+    path: categories/02-language-specialists/typescript-pro.md
+    status: active
+    pinned_commit: c193ad45419c
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+    note: Structure reference only; reconcile against reactnative.dev / TS handbook.
+  - name: rohitg00/awesome-claude-code-toolkit
+    url: https://github.com/rohitg00/awesome-claude-code-toolkit
+    path: agents/language-experts/typescript-specialist.md
+    status: active
+    pinned_commit: ebdf1d596d2c
+    last_synced: 2026-06-30
+    license: Apache-2.0
+    primary: false
+    note: Secondary structural reference (attribution required).

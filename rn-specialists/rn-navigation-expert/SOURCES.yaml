@@ -1,0 +1,73 @@
+# Provenance + curation for the rn-navigation-expert skill.
+# Maintained by rn-skill-consolidate — do not hand-edit pinned_commit / last_synced.
+
+skill: rn-navigation-expert
+domain: React Native navigation (React Navigation + Expo Router)
+last_consolidated: 2026-06-30
+
+discovery:
+  enabled: true
+  queries:                     # seeds for the discovery step (current year appended at run time)
+    - "React Navigation agent skill"
+    - "Expo Router best practices"
+    - "React Navigation typed routes deep linking"
+    - "Expo Router file-based routing typed routes"
+    - "React Native navigation state correctness"
+  authority_anchors:           # always weighted top for currency
+    - "reactnavigation.org"
+    - "docs.expo.dev/router"
+    - "react.dev"
+
+sources:
+  # ── PRIMARY / SOURCE OF TRUTH: maintainer docs win on any conflict ──
+  - name: Expo Router — maintainer docs (docs.expo.dev/router)
+    url: https://docs.expo.dev/router/introduction/
+    also:
+      - https://docs.expo.dev/router/introduction/        # file-based routing; Expo recommends Expo Router for new universal apps
+      - https://docs.expo.dev/router/basics/typed-routes/ # statically-typed routes
+      - https://docs.expo.dev/router/reference/search-parameters/ # useLocalSearchParams / useGlobalSearchParams
+      - https://docs.expo.dev/router/reference/deep-linking/      # deep linking via the file system + scheme config
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth
+    consulted_version: "Expo Router (Expo SDK 54+); built on React Navigation"
+    last_synced: 2026-06-30
+    license: "Expo — reference / learn-from only; never vendor verbatim"
+    note: >
+      Authoritative for file-based routing (a file in app/ becomes a route), typed routes,
+      Link / useRouter / useLocalSearchParams, and deep linking derived from the file system +
+      scheme/associated-domain config. Expo officially RECOMMENDS Expo Router for new universal
+      Expo apps. Expo Router is built ON React Navigation, so param/typing/linking concepts are
+      shared with the React Navigation source below.
+
+  - name: React Navigation — maintainer docs (reactnavigation.org)
+    url: https://reactnavigation.org/docs/getting-started
+    also:
+      - https://reactnavigation.org/docs/static-configuration   # static API: createStaticNavigation / createXNavigator (OPTIONAL)
+      - https://reactnavigation.org/docs/typescript             # ParamList type aliases, StaticParamList, module augmentation
+      - https://reactnavigation.org/docs/deep-linking           # linking prop, prefixes, config; getInitialURL/subscribe
+      - https://reactnavigation.org/blog/2024/11/06/react-navigation-7.0  # 7.0 release: static API introduced
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth
+    consulted_version: "React Navigation v7+ (static API optional; dynamic component API still valid)"
+    last_synced: 2026-06-30
+    license: "React Navigation — reference / learn-from only; never vendor verbatim"
+    note: >
+      Authoritative for the static API (createStaticNavigation / createXNavigator) — an OPTIONAL
+      API that simplifies config and makes TypeScript + deep linking easier; the dynamic component
+      API remains fully supported. Typed routes via ParamList type aliases (must be `type`, not
+      `interface`), StaticParamList<typeof Nav> for the static API, and module augmentation of
+      RootParamList. Deep linking via the `linking` prop (prefixes + config); custom handling via
+      getInitialURL / subscribe — not a ref. Works for both Expo and bare RN.
+
+  # ── Community references (structure/checklist only; reconcile against the maintainer docs) ──
+  - name: VoltAgent/awesome-claude-code-subagents
+    url: https://github.com/VoltAgent/awesome-claude-code-subagents
+    path: categories/02-language-specialists/expo-react-native-expert.md
+    status: active
+    pinned_commit: c193ad45419c
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+    note: Structure reference only; reconcile against reactnavigation.org / docs.expo.dev.

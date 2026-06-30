@@ -1,0 +1,118 @@
+# Provenance + curation for the rn-state-expert skill.
+# Maintained by rn-skill-consolidate — do not hand-edit pinned_commit / last_synced.
+
+skill: rn-state-expert
+domain: React Native client + server state management
+last_consolidated: 2026-06-30
+
+discovery:
+  enabled: true
+  queries:                     # seeds for the discovery step (current year appended at run time)
+    - "TanStack Query React Native"
+    - "React Query refetch on focus reconnect native"
+    - "Redux Toolkit RTK Query"
+    - "Zustand vs Redux"
+    - "Jotai atomic state"
+    - "SWR data fetching"
+    - "query key cache invalidation"
+  authority_anchors:           # always weighted top for currency (maintainer docs win)
+    - "TanStack Query docs"
+    - "Redux Toolkit"
+    - "Zustand"
+    - "Jotai"
+    - "react.dev"
+
+sources:
+  # ── PRIMARY / SOURCE OF TRUTH: official maintainer docs win on any conflict ──
+  - name: TanStack Query — React Native (maintainer docs)
+    url: https://tanstack.com/query/v5/docs/framework/react/react-native
+    also:
+      - https://tanstack.com/query/v5/docs/framework/react/guides/query-keys
+      - https://tanstack.com/query/v5/docs/framework/react/guides/query-invalidation
+      - https://tanstack.com/query/v5/docs/framework/react/guides/optimistic-updates
+      - https://tanstack.com/query/v5/docs/framework/react/guides/dependent-queries
+      - https://tanstack.com/query/v5/docs/framework/react/guides/infinite-queries
+    path: .
+    status: active
+    primary: true              # ranked first; the authoritative source of truth (verified, HIGH confidence)
+    consulted_version: "TanStack Query v5"
+    last_synced: 2026-06-30
+    license: "TanStack — reference / learn-from only; never vendor verbatim"
+    note: >
+      Authoritative for the RN manual-wiring centerpiece: refetch-on-reconnect is NOT automatic —
+      wire onlineManager.setEventListener with @react-native-community/netinfo (or expo-network);
+      refetch-on-app-focus must use the AppState 'change' event → focusManager.setFocused(status ===
+      'active'), guarded by Platform.OS !== 'web'. Also query-key design, cache invalidation,
+      optimistic updates + rollback, dependent/parallel queries, infinite/pagination.
+
+  - name: Redux Toolkit — maintainer docs (incl. RTK Query)
+    url: https://redux-toolkit.js.org
+    also:
+      - https://redux-toolkit.js.org/rtk-query/overview
+      - https://redux-toolkit.js.org/api/createSlice
+      - https://redux-toolkit.js.org/api/configureStore
+    path: .
+    status: active
+    primary: true
+    consulted_version: "Redux Toolkit (RTK Query bundled)"
+    last_synced: 2026-06-30
+    license: "Redux / MIT — reference / learn-from only"
+    note: >
+      createSlice + configureStore for client state; RTK Query (createApi, setupListeners) for
+      server state. RTK requires wrapping the app in a <Provider>. Same RN focus/online gap as
+      TanStack — setupListeners needs native AppState/NetInfo wiring.
+
+  - name: Zustand — maintainer docs
+    url: https://zustand.docs.pmnd.rs
+    also:
+      - https://zustand.docs.pmnd.rs/getting-started/comparison
+    path: .
+    status: active
+    primary: true
+    consulted_version: "Zustand v5"
+    last_synced: 2026-06-30
+    license: MIT
+    note: >
+      Official comparison: "Zustand and Redux both use an immutable state model; Redux requires
+      wrapping the app in context providers, Zustand does not." Narrow selectors + useShallow to
+      avoid over-rendering.
+
+  - name: Jotai — maintainer docs
+    url: https://jotai.org
+    path: .
+    status: active
+    primary: true
+    consulted_version: "Jotai v2"
+    last_synced: 2026-06-30
+    license: MIT
+    note: >
+      Atomic, bottom-up state; components subscribe to the specific atoms they read (fine-grained
+      re-renders by design). Derive with read-only/derived atoms.
+
+  - name: SWR — maintainer docs (Vercel)
+    url: https://swr.vercel.app
+    path: .
+    status: active
+    primary: true
+    consulted_version: "SWR v2"
+    last_synced: 2026-06-30
+    license: MIT
+    note: >
+      Data-fetching alt to TanStack Query. revalidateOnFocus / revalidateOnReconnect assume web
+      events — bridge to AppState/NetInfo on native, same as the TanStack wiring.
+
+  # ── Community references (structure/checklist only; reconcile against the primary docs) ──
+  - name: VoltAgent/awesome-claude-code-subagents
+    url: https://github.com/VoltAgent/awesome-claude-code-subagents
+    path: categories/02-language-specialists/react-specialist.md
+    status: active
+    pinned_commit: c193ad45419c
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+    note: Structure reference only; reconcile against official docs.
+
+# ── Notes ──
+# Client-state library CHOICE is a project convention, not an official mandate — the skill presents
+# trade-offs neutrally and aligns to the profile's `state` field. The one hard line is server/cache
+# state belongs in the `data_fetching` layer, not a client store.

@@ -1,0 +1,137 @@
+---
+name: rn-skill-consolidate
+description: "Repo-maintenance skill (NOT shipped to consuming projects). (Re)generates a consolidated specialist skill (e.g. react-expert, rn-state-expert, rn-navigation-expert, rn-testing-expert, typescript-expert, rn-code-review) from its SOURCES.yaml — audits existing sources for staleness, discovers newer/better sources on the web, then fetches, synthesizes, and writes the consolidated SKILL.md. Run with no target to pick from a menu of available skills (or `all`). Skills whose SOURCES.yaml sets mode: audit-only (e.g. rn-plan) get a source freshness audit only — no content rewrite. Use to create or refresh a specialist skill and keep it from going stale."
+argument-hint: "[target-skill | all] [--discover | --no-discover] [--open-pr]"
+---
+
+# Skill Consolidate — build/refresh a specialist skill from curated + discovered sources
+
+Maintenance tool for THIS repo. Keeps a consolidated specialist skill (React, state, navigation, …)
+current by re-synthesizing it from pinned upstream sources **plus** a freshness audit that finds
+new sources and flags dead ones. Output is one consumable `SKILL.md` (+ `references/`).
+
+> **Not a consuming-project skill.** It edits skill *content* in this repo — don't ship it into
+> an app's `.claude/skills/`.
+
+## Inputs
+- `target-skill` — the skill to (re)build, e.g. `react-expert` or `rn-code-review`. Its folder must hold a `SOURCES.yaml`. **If omitted, a selection menu is shown (Step 0).** Pass `all` to consolidate every one in turn.
+- `--discover` — run Step 1 (Source Audit & Discovery). Default **on**; the freshness guard.
+- `--no-discover` — skip discovery; just re-pull the current sources (fast refresh).
+- `--open-pr` — finish by opening a PR with the changes instead of leaving them in the tree.
+
+## Process
+
+> **Runs per selected target.** Step 0 picks the target(s); Steps 1–5 then run **once per target**
+> (for `All`, loop over every specialist).
+
+> **Audit-only targets.** A `SOURCES.yaml` with `mode: audit-only` marks a skill whose body is
+> **hand-curated, not synthesized** (e.g. `rn-plan` — a workflow/orchestration skill, not
+> distilled domain knowledge). For these, run **Step 1 (staleness + discovery)** and **Step 5
+> (report)** only — **skip Steps 2–4 and NEVER write the target's `SKILL.md`.** Output is a
+> freshness report + a proposed `SOURCES.yaml` diff (retire dead / add candidate sources) plus a
+> short "consider adapting" note. A human ports any ideas by hand, selectively.
+
+### Step 0 — Select target(s)
+- If a `target-skill` arg was given, use it. If `all` was given, select every specialist.
+- **Otherwise, present a menu.** Discover consolidatable skills by scanning for any skill folder
+  that contains a `SOURCES.yaml` — under `rn-specialists/` (the specialist skills) **and**
+  `rn-skills/` (core skills that opt in, e.g. `rn-code-review`). Ask via `AskUserQuestion` with
+  one numbered option **per skill found**, plus an **"All"** option:
+  ```
+  Which skill do you want to consolidate?
+    1. react-expert
+    2. rn-state-expert
+    3. rn-navigation-expert
+    4. rn-testing-expert
+    5. typescript-expert
+    6. rn-solid-expert
+    7. rn-tdd
+    8. rn-code-review
+    9. …                       (any rn-specialists/*/ or rn-skills/*/ with a SOURCES.yaml)
+    n. All
+  ```
+  The list is **built dynamically** from what's on disk — dropping a `SOURCES.yaml` into any
+  `rn-specialists/<name>/` or `rn-skills/<name>/` makes it appear automatically, no edit here.
+
+### Step 0.1 — Load (for the selected target)
+Read `{target}/SKILL.md` + `{target}/SOURCES.yaml` (sources, `domain`, `discovery` config, licenses,
+`mode`). **If `mode: audit-only`** → run Steps 1 and 5 only; skip Steps 2–4 (no fetch, no synthesis,
+no `SKILL.md` write).
+
+### Step 1 — Source Audit & Discovery  ← the freshness guard (skip with `--no-discover`)
+
+**1a. Staleness sweep — kill dead/outdated sources.** For each `status: active` source:
+archived? no commits in > 12 months? README says "deprecated / unmaintained"? guidance uses
+superseded APIs (e.g. legacy lifecycle methods, pre-Hooks class components)? → propose
+`status: retired` **with a reason**. React/RN move fast (React Compiler hit v1.0 stable Oct 2025;
+the New Architecture is now default) — guidance rots quickly, so this sweep matters.
+
+**1b. Discovery — find newer/better.** Bounded web research:
+- `WebSearch` the domain using the `discovery.queries` seeds + the current year, AND check the
+  `authority_anchors` (react.dev / reactnative.dev / docs.expo.dev / the relevant maintainer docs)
+  for guidance changes.
+- Collect candidate sources **not already listed**. Known-good community references to consider as
+  content sources (MIT/Apache, pinned, `primary: false`): VoltAgent/awesome-claude-code-subagents,
+  addyosmani/agent-skills, rohitg00/awesome-claude-code-toolkit. Community skill **indexes** —
+  hesreallyhim/awesome-claude-code, ComposioHQ/awesome-claude-skills — are **discovery-only**
+  (cite to find candidates; unlicensed, so never vendor their contents).
+
+**1c. Vet candidates** against explicit criteria — drop anything that fails:
+| Criterion | Test |
+|---|---|
+| Maintained | commits within ~12 months / not archived |
+| Authoritative | credible author, strong adoption (stars/refs), or official |
+| Relevant | squarely within `domain` |
+| License-compatible | permits derivation + redistribution (MIT/Apache to derive, else cite-only) |
+| Non-duplicate | adds something the active set lacks |
+| Actually good | a quick read confirms quality, not SEO filler |
+
+Rank survivors; keep the top few.
+
+**1d. Propose — never auto-add.** Present **sources to retire** (with reason) + **candidates to
+add** (with why + license). **Human approves.** Apply approved changes to `SOURCES.yaml`
+(`status`, reasons). Discovery never silently changes the source set.
+
+### Step 2 — Fetch
+For each `status: active` source: fetch at HEAD (`gh` / clone / `WebFetch`); record `pinned_commit`
++ `last_synced`. Confirm `license` (fill if `TBD`); anything non-redistributable → **cite/link only**.
+
+### Step 3 — Extract (fan-out)
+One sub-agent per source → pull its domain guidance as structured notes: *claim · rationale · code idiom · source*.
+
+### Step 4 — Synthesize   (skipped for `mode: audit-only` targets — never rewrite their SKILL.md)
+Merge into `{target}/SKILL.md` (overflow detail → `references/`) under the **house style**:
+- **Precedence — the `primary: true` source wins.** The official source (react.dev /
+  reactnative.dev / docs.expo.dev, or the canonical maintainer docs — whichever the skill's
+  `SOURCES.yaml` marks `primary: true`) is the **source of truth** and overrides community sources
+  on any conflict, gated to the project's `rn_version` / `expo_sdk`. Community sources fill in
+  practical patterns and mistake heuristics, not semantics.
+- **Dedupe** overlapping advice; **flag** genuine conflicts in a "Contested" note (don't silently pick).
+- **Organize by topic** (state, composition, layout, performance, navigation, data fetching, accessibility, testing).
+- **Attribute** each non-obvious recommendation to its source.
+
+### Step 5 — Record + report
+Update `SOURCES.yaml` (`last_consolidated`, SHAs, dates, status changes). Emit:
+- **Source-audit summary** — retired / added / unchanged (with reasons).
+- **Content diff summary** — what changed in the guidance + any contested points.
+  - *Audit-only targets:* no content diff (SKILL.md untouched). Instead emit a **"consider
+    adapting"** note — what shifted upstream that a human might fold into the skill by hand.
+
+Then **stop for human review**. With `--open-pr`, open a PR; else leave it in the working tree.
+
+## Modes
+- **On-demand:** `rn-skill-consolidate react-expert` (add `--no-discover` for a quick same-sources refresh).
+- **Scheduled:** a monthly routine running `--discover --open-pr` so freshness checks surface as PRs you review — keeps skills from rotting without daily babysitting.
+
+## Cost control
+"Quick research," not a thesis: cap discovery at a handful of targeted searches + light fetches.
+Full discovery on the scheduled pass; on-demand refreshes can `--no-discover`.
+
+## Constraints
+- **Official docs are the source of truth** — the `primary: true` source (react.dev / reactnative.dev / docs.expo.dev / maintainer docs) always wins on conflict; community sources never override it.
+- **Human-gates the source set** — discovery proposes, you approve adds/retires.
+- **Licensing first** — verify each source's license before copying; MIT/Apache to derive, non-permissive → cite, don't vendor.
+- **Reproducible** — pin commits so a re-run is deterministic and upstream changes are diffable.
+- **Never auto-commit / auto-push** — output for review.
+- **Generalizes** — same flow rebuilds any specialist (`rn-state-expert`, `rn-testing-expert`, …); each has its own `SOURCES.yaml`.
+- **Respect `mode: audit-only`** — for hand-curated workflow skills (`rn-plan`), only audit sources + report; never fetch, synthesize, or write their `SKILL.md`.

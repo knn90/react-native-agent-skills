@@ -1,0 +1,71 @@
+# Provenance + curation for the rn-solid-expert skill.
+# Maintained by rn-skill-consolidate — do not hand-edit pinned_commit / last_synced.
+
+skill: rn-solid-expert
+domain: SOLID + clean decoupling for React Native / TypeScript
+last_consolidated: 2026-06-30
+
+discovery:
+  enabled: true
+  queries:
+    - "SOLID principles TypeScript agent skill"
+    - "React clean architecture dependency inversion"
+    - "frontend decoupling decorator composite adapter"
+    - "interface-driven design TypeScript composition"
+  authority_anchors:
+    - "Robert C. Martin — SOLID / Clean Architecture (canonical, general SW engineering)"
+    - "refactoring.guru — design patterns (Decorator / Composite / Adapter / Facade), language-agnostic"
+    - "the consuming project's architecture + rules_file"
+
+sources:
+  # ── PRIMARY / SOURCE OF TRUTH ──
+  - name: SOLID (Robert C. Martin) + TypeScript interface-driven design
+    url: https://en.wikipedia.org/wiki/SOLID
+    also:
+      - https://www.typescriptlang.org/docs/handbook/2/objects.html        # interfaces / structural typing
+      - https://react.dev/learn/passing-props-to-a-component                # composition + dependency passing
+      - "Robert C. Martin — Clean Architecture: A Craftsman's Guide (2017); SRP/OCP/LSP/ISP/DIP"
+    path: .
+    status: active
+    primary: true
+    consulted_version: "SOLID (Martin); TypeScript structural typing + React composition"
+    last_synced: 2026-06-30
+    license: "Canonical SW-engineering principles (public knowledge) + official TS/React reference; re-express in original words"
+    note: >
+      SOLID is general software engineering — React/RN take NO official app-architecture stance, so the
+      authority is Martin's principles, translated to TypeScript via interface-driven design and React
+      composition (props/context/constructor params/factory functions). The principles are public
+      knowledge (not proprietary); write original guidance. PATTERN selection (feature-folders /
+      container-presentational / clean-ish) is owned by the architecture lens, not this skill.
+
+  # ── Decoupling patterns (CC BY 4.0 worked examples — cite, re-express) ──
+  - name: refactoring.guru — design patterns
+    url: https://refactoring.guru/design-patterns
+    also:
+      - https://refactoring.guru/design-patterns/decorator
+      - https://refactoring.guru/design-patterns/composite
+      - https://refactoring.guru/design-patterns/adapter
+      - https://refactoring.guru/design-patterns/facade
+    path: .
+    status: active
+    last_synced: 2026-06-30
+    license: "Content CC BY 4.0 — cite/learn-from, re-express in original words; do not copy verbatim"
+    primary: true
+    note: >
+      Language-agnostic reference for the Decorator / Composite / Adapter / Facade decoupling toolkit.
+      Use the TypeScript-flavored examples + the intent/structure descriptions; write original guidance.
+
+  # ── Community references (learn-from / cite) ──
+  - name: addyosmani/agent-skills
+    url: https://github.com/addyosmani/agent-skills
+    path: skills/frontend-ui-engineering/
+    status: active
+    pinned_commit: aba7c4e9695c
+    last_synced: 2026-06-30
+    license: MIT
+    primary: false
+    note: Frontend engineering discipline (Addy Osmani).
+
+# ── Evaluated, NOT added ──
+# - repos with NO license (all rights reserved) — cite/learn-from only, never vendor text/structure.
+# - PolyForm / non-compete licensed skill repos — not redistribution-safe.
